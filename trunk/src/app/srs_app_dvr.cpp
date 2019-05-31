@@ -791,6 +791,18 @@ srs_error_t SrsDvrSegmentPlan::on_publish()
 
 void SrsDvrSegmentPlan::on_unpublish()
 {
+    // support multiple publish.
+    if (!dvr_enabled) {
+        return;
+    }
+    
+    // ignore error.
+    srs_error_t err = segment->close();
+    if (err != srs_success) {
+        srs_warn("ignore flv close error %s", srs_error_desc(err).c_str());
+    }
+    
+    dvr_enabled = false;
 }
 
 srs_error_t SrsDvrSegmentPlan::on_audio(SrsSharedPtrMessage* shared_audio, SrsFormat* format)
